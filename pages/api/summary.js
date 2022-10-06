@@ -9,9 +9,6 @@ export default function summaryRoute(req, res) {
 
     //compute DB summary
     const users = readUsersDB();
-    const userCount = 0,
-      adminCount = 0,
-      totalMoney = 0;
     users.map((x) => {
       x.isAdmin ? adminCount + 1 : userCount + 1, (totalMoney += x.money);
     });
