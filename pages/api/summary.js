@@ -1,9 +1,27 @@
 export default function summaryRoute(req, res) {
   if (req.method === "GET") {
     //check authentication
-    //return res.status(403).json({ ok: false, message: "Permission denied" });
+    const user = checkToken(req);
+
+    if (!user || !user.isAdmin) {
+      return res.status(403).json({ ok: false, message: "Permission denied" });
+    }
+
     //compute DB summary
-    //return response
+    const users = readUsersDB();
+    const userCount = 0,
+      adminCount = 0,
+      totalMoney = 0;
+    users.map((x) => {
+      x.isAdmin ? adminCount + 1 : userCount + 1, (totalMoney += x.money);
+    });
+
+    return res.json({
+      ok: true,
+      userCount: userCount,
+      adminCount: adminCount,
+      totalMoney: totalMoney,
+    });
   } else {
     return res.status(400).json({ ok: false, message: "Invalid HTTP Method" });
   }
