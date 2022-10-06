@@ -1,3 +1,6 @@
+import { checkToken } from "../../backendLibs/checkToken";
+import { readUsersDB, writeUsersDB } from "../../backendLibs/dbLib";
+
 export default function withdrawRoute(req, res) {
   if (req.method === "PUT") {
     //check authentication
@@ -24,12 +27,13 @@ export default function withdrawRoute(req, res) {
     //find and update money in DB (if user has enough money)
     const users = readUsersDB();
     const foundUser = users.find((x) => x.username === username);
-    foundUser.money -= amount;
+
     if (foundUser.money < amount)
       return res
         .status(400)
         .json({ ok: false, message: "You do not has enough money" });
 
+    foundUser.money -= amount;
     writeUsersDB(users);
     //return response
     return res.json({ ok: true, money: foundUser.money });
